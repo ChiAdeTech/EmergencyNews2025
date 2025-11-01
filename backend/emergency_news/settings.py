@@ -22,6 +22,7 @@ INSTALLED_APPS = [
 
     "rest_framework",
     "django_filters",
+    'drf_yasg',
     "newsfeeds",
 ]
 
@@ -33,7 +34,11 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
     ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",  # 👈 add this
+    ],
 }
+
 
 # --- Middleware ---
 MIDDLEWARE = [
@@ -69,7 +74,7 @@ WSGI_APPLICATION = "emergency_news.wsgi.application"
 # --- Database ---
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgresql://emergency_news_db_user:YWg7KrM9EBU2JoD977TV7CoWKv3k5MuU@dpg-d42q7pv5r7bs73b8ttog-a/emergency_news_db",
+        default="postgresql://emergency_news_db_user:YWg7KrM9EBU2JoD977TV7CoWKv3k5MuU@dpg-d42q7pv5r7bs73b8ttog-a.oregon-postgres.render.com/emergency_news_db",
         conn_max_age=600,
         ssl_require=True,
     )
