@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "django_filters",
     'drf_yasg',
     "newsfeeds",
+    "corsheaders",
 ]
 
 # --- Django REST Framework ---
@@ -42,6 +43,7 @@ REST_FRAMEWORK = {
 
 # --- Middleware ---
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -51,6 +53,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # local Next.js dev server
+    "https://your-frontend-domain.com",  # production Next.js
+]
+
 
 ROOT_URLCONF = "emergency_news.urls"
 
