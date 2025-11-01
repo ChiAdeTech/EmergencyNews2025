@@ -72,3 +72,6 @@ services:
         fromService:
           name: emergency-news-api
           property: env.SECRET_KEY
+
+
+rootDirectory: backend
