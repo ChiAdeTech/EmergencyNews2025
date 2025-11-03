@@ -1,6 +1,12 @@
 import axios from "axios";
 import { DJANGO_API } from "@/utils/MyConstants";
 
+/**
+ * ------------------------------
+ *  Interfaces
+ * ------------------------------
+ */
+
 export interface NewsArticle {
   id: number;
   title: string;
@@ -19,27 +25,53 @@ export interface PaginatedResponse<T> {
   results: T[];
 }
 
-// Create axios instance
+/**
+ * ------------------------------
+ *  Axios Setup
+ * ------------------------------
+ */
+
 const api = axios.create({
   baseURL: DJANGO_API,
   headers: { "Content-Type": "application/json" },
 });
 
 /**
+ * ------------------------------
+ *  Utility Helpers
+ * ------------------------------
+ */
+
+// ✅ Normalize and format time frame strings safely
+const formatTimeFrame = (value?: string): string | undefined => {
+  if (!value) return undefined;
+  return value.trim().toLowerCase().replace(/\s+/g, "_");
+};
+
+// ✅ Build query params cleanly (handles undefined values)
+const buildQuery = (params: Record<string, string | undefined>): string => {
+  const search = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value) search.append(key, value);
+  });
+  return search.toString() ? `?${search.toString()}` : "";
+};
+
+/**
+ * ------------------------------
+ *  API Functions
+ * ------------------------------
+ */
+
+/**
  * ✅ Fetch all news
- * Optionally filtered by time frame (e.g., "Today", "Yesterday", "Last week", "Last month")
+ * Optionally filtered by time frame (e.g. "Today", "Last Week", "October 2025", etc.)
  */
 export const fetchNews = async (
   timeFrame?: string
 ): Promise<PaginatedResponse<NewsArticle>> => {
-  let url = "/news/";
-
-  // Append ?time_frame=... if provided
-  if (timeFrame) {
-    url += `?time_frame=${encodeURIComponent(timeFrame.toLowerCase().replace(/\s+/g, "_"))}`;
-  }
-
-  const res = await api.get<PaginatedResponse<NewsArticle>>(url);
+  const query = buildQuery({ time_frame: formatTimeFrame(timeFrame) });
+  const res = await api.get<PaginatedResponse<NewsArticle>>(`/news/${query}`);
   return res.data;
 };
 
@@ -51,18 +83,27 @@ export const fetchNewsByCategory = async (
   category: string,
   timeFrame?: string
 ): Promise<PaginatedResponse<NewsArticle>> => {
-  let url = `/news/?category=${encodeURIComponent(category)}`;
-
-  if (timeFrame) {
-    url += `&time_frame=${encodeURIComponent(timeFrame.toLowerCase().replace(/\s+/g, "_"))}`;
-  }
-
-  const res = await api.get<PaginatedResponse<NewsArticle>>(url);
+  const query = buildQuery({
+    category: category,
+    time_frame: formatTimeFrame(timeFrame),
+  });
+  const res = await api.get<PaginatedResponse<NewsArticle>>(`/news/${query}`);
   return res.data;
 };
 
 /**
- * ✅ Fetch next page by URL (Django paginated `next`)
+ * ✅ Fetch news by time frame only
+ */
+export const fetchNewsByTimeFrame = async (
+  timeFrame: string
+): Promise<PaginatedResponse<NewsArticle>> => {
+  const query = buildQuery({ time_frame: formatTimeFrame(timeFrame) });
+  const res = await api.get<PaginatedResponse<NewsArticle>>(`/news/${query}`);
+  return res.data;
+};
+
+/**
+ * ✅ Fetch next page by URL (handles both absolute and relative)
  */
 export const fetchNextPageFromUrl = async (
   nextUrl: string
@@ -73,7 +114,7 @@ export const fetchNextPageFromUrl = async (
 };
 
 /**
- * ✅ Fetch all categories
+ * ✅ Fetch all unique categories
  */
 export const fetchCategories = async (): Promise<string[]> => {
   const res = await api.get<string[]>("/categories/");

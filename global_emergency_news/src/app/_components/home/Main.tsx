@@ -4,6 +4,7 @@ import { MainSelect } from "./MainSelect";
 import NewsContent from "./NewsContent";
 import { useNewsStore } from "@/store/newsStore";
 import { CategorySelect } from "./CategorySelect";
+import { TimeFrameSelect } from "./TimeFrameSelect";
 
 export default function Main() {
   const { news, loading, error, fetchAllNews, fetchNextPage, next } = useNewsStore();
@@ -53,11 +54,7 @@ export default function Main() {
 
         <div className="flex gap-[12.18px] self-end">
           <CategorySelect />
-          <MainSelect
-            addClass="md:w-[130px] w-[110px] px-[7px] py-[6px]"
-            options={["Today", "Yesterday", "Last week", "Last month"]}
-            placeholder="Time Frame"
-          />
+          <TimeFrameSelect />
         </div>
       </header>
 

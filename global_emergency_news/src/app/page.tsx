@@ -8,7 +8,7 @@ export default function Home() {
       <div>
         <EmergencyNews/>
       </div>
-      <div>
+      <div className="flex-1">
         <Main/>
       </div>
     </div>

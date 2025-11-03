@@ -1,10 +1,10 @@
-// src/store/newsStore.ts
 import { create } from "zustand";
 import {
   NewsArticle,
   fetchNews,
   fetchNewsByCategory,
   fetchCategories,
+  fetchNextPageFromUrl,
 } from "@/service/newsService";
 
 interface NewsState {
@@ -23,6 +23,7 @@ interface NewsState {
   fetchNextPage: () => Promise<void>;
   fetchAllCategories: () => Promise<void>;
   setTimeFrame: (timeFrame: string | null) => void;
+  clearFilters: () => void;
 }
 
 export const useNewsStore = create<NewsState>((set, get) => ({
@@ -36,9 +37,11 @@ export const useNewsStore = create<NewsState>((set, get) => ({
   loading: false,
   error: null,
 
-  // ✅ Helper to apply timeframe filter
+  /**
+   * ✅ Fetch all news (optionally filtered by time frame)
+   */
   fetchAllNews: async (timeFrame) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, selectedCategory: null });
     try {
       const data = await fetchNews(timeFrame);
       set({
@@ -46,16 +49,27 @@ export const useNewsStore = create<NewsState>((set, get) => ({
         next: data.next,
         previous: data.previous,
         count: data.count,
+        selectedTimeFrame: timeFrame || null,
         loading: false,
       });
     } catch (err: any) {
-      set({ error: err.message || "Failed to fetch news", loading: false });
+      set({
+        error: err.message || "Failed to fetch news",
+        loading: false,
+      });
     }
   },
 
-  // ✅ Fetch by category (with optional time filter)
-  fetchNewsByCategory: async (category: string, timeFrame?: string) => {
-    set({ loading: true, error: null, selectedCategory: category });
+  /**
+   * ✅ Fetch news by category (with optional time frame)
+   */
+  fetchNewsByCategory: async (category, timeFrame) => {
+    set({
+      loading: true,
+      error: null,
+      selectedCategory: category,
+      selectedTimeFrame: timeFrame || null,
+    });
     try {
       const data = await fetchNewsByCategory(category, timeFrame);
       set({
@@ -73,15 +87,16 @@ export const useNewsStore = create<NewsState>((set, get) => ({
     }
   },
 
-  // ✅ Pagination (respects filters)
+  /**
+   * ✅ Fetch next page (preserves filters)
+   */
   fetchNextPage: async () => {
     const { next } = get();
     if (!next) return;
 
     set({ loading: true });
     try {
-      const res = await fetch(next);
-      const data = await res.json();
+      const data = await fetchNextPageFromUrl(next);
       set((state) => ({
         news: [...state.news, ...data.results],
         next: data.next,
@@ -97,18 +112,31 @@ export const useNewsStore = create<NewsState>((set, get) => ({
     }
   },
 
-  // ✅ Categories
+  /**
+   * ✅ Fetch all unique categories
+   */
   fetchAllCategories: async () => {
     try {
       const data = await fetchCategories();
       set({ categories: data });
     } catch (err: any) {
-      set({ error: err.message || "Failed to fetch categories" });
+      set({
+        error: err.message || "Failed to fetch categories",
+      });
     }
   },
 
-  // ✅ Set time frame filter
+  /**
+   * ✅ Update selected time frame filter
+   */
   setTimeFrame: (timeFrame) => {
     set({ selectedTimeFrame: timeFrame });
+  },
+
+  /**
+   * ✅ Clear all filters (category + time frame)
+   */
+  clearFilters: () => {
+    set({ selectedCategory: null, selectedTimeFrame: null });
   },
 }));
