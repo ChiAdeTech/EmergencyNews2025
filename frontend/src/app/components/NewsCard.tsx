@@ -1,3 +1,5 @@
+// src/app/components/NewsCard.tsx
+
 import { useState } from "react";
 import { FALLBACK_NEWS_IMAGE } from "../utils/MyConstants";
 

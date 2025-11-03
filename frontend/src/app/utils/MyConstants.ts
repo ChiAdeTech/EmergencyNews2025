@@ -1,3 +1,5 @@
+// src/app/utils/MyConstants.ts
+
 export const DJANGO_API = "http://127.0.0.1:8000/api"
 
 // export const DJANGO_API = "https://emergencynews2025.onrender.com/api";
