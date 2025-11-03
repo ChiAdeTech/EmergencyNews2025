@@ -82,7 +82,7 @@ WSGI_APPLICATION = "emergency_news.wsgi.application"
 # --- Database ---
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgresql://emergency_news_db_user:YWg7KrM9EBU2JoD977TV7CoWKv3k5MuU@dpg-d42q7pv5r7bs73b8ttog-a.oregon-postgres.render.com/emergency_news_db",
+        default="postgresql://emergency_news_db_6u0l_user:7Q5FOjIPSdA2zqcz0Az43rnQk5RXKbEp@dpg-d4448rumcj7s73bn2fn0-a.oregon-postgres.render.com/emergency_news_db_6u0l",
         conn_max_age=600,
         ssl_require=True,
     )
@@ -119,3 +119,5 @@ CELERY_RESULT_BACKEND = REDIS_URL
 
 # --- Default Primary Key ---
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+FALLBACK_NEWS_IMAGE = "https://res.cloudinary.com/devqbjptr/image/upload/v1762148783/a22dd152-efff-44f8-acf3-c0069ceed8ea.png"
