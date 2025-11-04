@@ -3,6 +3,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import type { NewsArticle } from "@/service/newsService";
+import { FALLBACK_NEWS_IMAGE } from "@/utils/MyConstants";
 
 interface NewsContentProps {
   article: NewsArticle;
@@ -125,12 +126,20 @@ export default function NewsContent({ article }: NewsContentProps) {
       <div className="md:w-[35%] w-full flex justify-center items-center">
         {article.image ? (
           <img
-            src={article.image}
+            src={article.image || FALLBACK_NEWS_IMAGE}
             alt={article.title}
             width={400}
             height={250}
             className="rounded-md object-cover w-full h-auto"
+            onError={(e) => {
+              const target = e.currentTarget;
+              // Prevent infinite loop in case fallback also fails
+              if (target.src !== FALLBACK_NEWS_IMAGE) {
+                target.src = FALLBACK_NEWS_IMAGE;
+              }
+            }}
           />
+
         ) : (
           <div className="w-full h-[200px] bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm">
             No image available

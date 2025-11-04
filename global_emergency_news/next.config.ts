@@ -2,10 +2,20 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      "a3.espncdn.com",
-      "i.cbc.ca",
+    // ✅ Allow images from any remote source (wildcard pattern)
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "**",
+      },
     ],
+    // Optional: Disable static import domain restrictions too
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'inline',
   },
 
   eslint: {
