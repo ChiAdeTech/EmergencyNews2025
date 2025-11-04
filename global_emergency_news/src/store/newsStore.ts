@@ -71,6 +71,7 @@ export const useNewsStore = create<NewsState>((set, get) => ({
       selectedTimeFrame: timeFrame || null,
     });
     try {
+      document.body.style.cursor = "wait";
       const data = await fetchNewsByCategory(category, timeFrame);
       set({
         news: data.results,
@@ -84,6 +85,8 @@ export const useNewsStore = create<NewsState>((set, get) => ({
         error: err.message || "Failed to fetch category news",
         loading: false,
       });
+    }finally{
+      document.body.style.cursor = "default";
     }
   },
 

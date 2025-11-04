@@ -87,13 +87,31 @@ export default function NewsContent({ article }: NewsContentProps) {
           </p>
         )}
 
-        {/* Always show Read button */}
-        <button
-          onClick={handleReadMore}
-          className="text-blue-600 text-[14px] underline hover:text-blue-800"
-        >
-          {showExpand && !isExpanded ? "Read more →" : "Read full article →"}
-        </button>
+        {/* Read button logic */}
+        {showExpand ? (
+          <button
+            onClick={() => {
+              if (!isExpanded) {
+                // Expand text first
+                setIsExpanded(true);
+              } else {
+                // Then open the article
+                handleReadMore();
+              }
+            }}
+            className="text-blue-600 text-[14px] underline hover:text-blue-800"
+          >
+            {!isExpanded ? "Read more →" : "Read full article →"}
+          </button>
+        ) : (
+          <button
+            onClick={handleReadMore}
+            className="text-blue-600 text-[14px] underline hover:text-blue-800"
+          >
+            Read full article →
+          </button>
+        )}
+
 
         {/* Source & Category */}
         <div className="mt-3 text-[13px] text-gray-500 flex flex-wrap gap-2">
