@@ -1,3 +1,0 @@
-web: gunicorn emergency_news.wsgi
-worker: celery -A emergency_news worker -l info
-beat: celery -A emergency_news beat -l info

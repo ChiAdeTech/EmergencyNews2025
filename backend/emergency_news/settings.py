@@ -1,3 +1,5 @@
+# emergency_news/settings.py
+
 from pathlib import Path
 import os
 import dj_database_url
@@ -82,6 +84,8 @@ WSGI_APPLICATION = "emergency_news.wsgi.application"
 # --- Database ---
 DATABASES = {
     "default": dj_database_url.config(
+        # First, check if DATABASE_URL is set in environment (e.g., from Docker)
+        env="DATABASE_URL",
         default="postgresql://emergency_news_db_6u0l_user:7Q5FOjIPSdA2zqcz0Az43rnQk5RXKbEp@dpg-d4448rumcj7s73bn2fn0-a.oregon-postgres.render.com/emergency_news_db_6u0l",
         conn_max_age=600,
         ssl_require=True,
