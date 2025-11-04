@@ -15,7 +15,7 @@ export default function NavBar(){
     const pathname = usePathname()
     return(
         <nav className="z-50">
-          
+
           <div className="flex md:flex-row flex-col gap-y-4 justify-between text-[16px] pb-[24px] bg-[#FFFFFF] md:px-[50px] px-[20px]
                     border-b border-solid border-[#D9D9D9] items-center pt-[22px] fixed top-0 w-full">
             <Link href="/" 
