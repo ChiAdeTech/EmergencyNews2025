@@ -1,4 +1,4 @@
-#!/home/adesina/Documents/EmergencyNews/backend/venv/bin/python3
+#!/home/userland/EmergencyNews2025/backend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

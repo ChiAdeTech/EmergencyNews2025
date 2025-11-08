@@ -133,16 +133,16 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
-REDIS_URL = os.getenv("REDIS_URL", "redis://red-d42qfff5r7bs73b96bqg:6379/0")
+#REDIS_URL = os.getenv("REDIS_URL", "redis://red-d42qfff5r7bs73b96bqg:6379/0")
 
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
+#CELERY_BROKER_URL = REDIS_URL
+#CELERY_RESULT_BACKEND = REDIS_URL
 
 
 # For Local
-# REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-# CELERY_BROKER_URL = REDIS_URL
-# CELERY_RESULT_BACKEND = REDIS_URL
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 
 # --- Default Primary Key ---
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
