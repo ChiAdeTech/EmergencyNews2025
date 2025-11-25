@@ -1,25 +1,22 @@
 #!/bin/bash
+# run_all_fetch_tasks.sh
 
-# Activate virtual environment
-source venv/bin/activate
+# Exit immediately if a command exits with a non-zero status
+set -e
 
-# Run Django shell and execute Celery tasks
-python manage.py shell <<'EOF'
-from newsfeeds.tasks import (
-    fetch_bbc_news,
-    fetch_cnn_news,
-    fetch_vanguard_news,
-    fetch_aljazeera_news,
-    fetch_guardian_news,
-    fetch_channelstv_news,
-    fetch_premiumtimes_news,
-)
+# Activate the virtual environment
+if [ -f "venv/bin/activate" ]; then
+    echo "Activating virtual environment..."
+    source venv/bin/activate
+else
+    echo "Virtual environment not found. Please create it first."
+    exit 1
+fi
 
-fetch_bbc_news.delay()
-fetch_cnn_news.delay()
-fetch_vanguard_news.delay()
-fetch_aljazeera_news.delay()
-fetch_guardian_news.delay()
-fetch_channelstv_news.delay()
-fetch_premiumtimes_news.delay()
-EOF
+# Run the fetch tasks inside Docker
+echo "Running fetch tasks inside Docker..."
+docker compose run django python manual_tasks.py
+
+# Deactivate virtual environment
+deactivate
+echo "Done."

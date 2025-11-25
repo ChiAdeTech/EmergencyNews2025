@@ -2,7 +2,6 @@
 
 from pathlib import Path
 import os
-import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -83,13 +82,10 @@ WSGI_APPLICATION = "emergency_news.wsgi.application"
 
 # --- Database ---
 DATABASES = {
-    "default": dj_database_url.config(
-        # First, check if DATABASE_URL is set in environment (e.g., from Docker)
-        env="DATABASE_URL",
-        default="postgresql://emergency_news_db_6u0l_user:7Q5FOjIPSdA2zqcz0Az43rnQk5RXKbEp@dpg-d4448rumcj7s73bn2fn0-a.oregon-postgres.render.com/emergency_news_db_6u0l",
-        conn_max_age=600,
-        ssl_require=True,
-    )
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
 
 # --- Password Validators ---
@@ -133,16 +129,19 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
-#REDIS_URL = os.getenv("REDIS_URL", "redis://red-d42qfff5r7bs73b96bqg:6379/0")
-
-#CELERY_BROKER_URL = REDIS_URL
-#CELERY_RESULT_BACKEND = REDIS_URL
 
 
 # For Local
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+# REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+# CELERY_BROKER_URL = REDIS_URL
+# CELERY_RESULT_BACKEND = REDIS_URL
+
+
+# For Docker (container Redis)
+REDIS_URL = os.getenv("REDIS_URL", "redis://redis:6379/0")
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
+
 
 # --- Default Primary Key ---
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
