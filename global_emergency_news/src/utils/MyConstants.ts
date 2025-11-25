@@ -6,7 +6,7 @@
 
 // export const DJANGO_API = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
-export const DJANGO_API = "http://195.110.58.46:9000/api"
+export const DJANGO_API = "https://emergency.sabiway.com/api"
 
 
 
