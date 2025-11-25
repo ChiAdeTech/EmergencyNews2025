@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-placeholder-key")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 # Render automatically injects its hostname at runtime
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
+ALLOWED_HOSTS = ["*"]
 
 # --- Installed Apps ---
 INSTALLED_APPS = [
