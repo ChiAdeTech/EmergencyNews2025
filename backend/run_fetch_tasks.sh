@@ -15,7 +15,7 @@ fi
 
 # Run the fetch tasks inside Docker
 echo "Running fetch tasks inside Docker..."
-docker compose run django python manual_tasks.py
+docker-compose run django python manual_tasks.py
 
 # Deactivate virtual environment
 deactivate
