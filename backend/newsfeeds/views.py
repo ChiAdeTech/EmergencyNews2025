@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import datetime
 from datetime import timedelta
+from .pagination import HttpsPagination
 
 class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -25,6 +26,8 @@ class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ['title', 'category', 'summary', 'source']
     filterset_fields = ['category', 'source']
+
+    pagination_class = HttpsPagination 
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -117,6 +120,7 @@ class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
         except Exception:
             # Any parsing errors => return empty queryset
             queryset = queryset.none()
+
 
         return queryset
 

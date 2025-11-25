@@ -25,3 +25,5 @@ class NewsArticleSerializer(serializers.ModelSerializer):
         soup = BeautifulSoup(obj.summary, "html.parser")
         text = soup.get_text(separator=" ", strip=True)
         return text
+
+
