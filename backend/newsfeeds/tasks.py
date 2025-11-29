@@ -40,3 +40,16 @@ def fetch_premiumtimes_news():
 @shared_task
 def fetch_allafrica_news():
     call_command('fetch_allafrica_news')
+
+@shared_task
+def fetch_modernghana_news():
+    call_command('fetch_modernghana_news')
+
+@shared_task
+def fetch_myjoyonline_news():
+    call_command('fetch_myjoyonline_news')
+
+@shared_task
+def fetch_ghheadlines_news():
+    call_command('fetch_ghheadlines_news')
+

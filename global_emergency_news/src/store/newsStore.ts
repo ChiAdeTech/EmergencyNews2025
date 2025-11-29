@@ -6,7 +6,6 @@ import {
   fetchNews,
   fetchNewsByCategory,
   fetchCategories,
-  fetchRegions,
   fetchCountries,
   fetchNextPageFromUrl,
 } from "@/service/newsService";
@@ -35,7 +34,6 @@ interface NewsState {
   fetchNewsByCategory: (category: string, timeFrame?: string) => Promise<void>;
   fetchNextPage: () => Promise<void>;
   fetchAllCategories: () => Promise<void>;
-  fetchAllRegions: () => Promise<void>;
   fetchAllCountries: () => Promise<void>;
   setTimeFrame: (timeFrame: string | null) => void;
   setRegion: (region: string | null) => void;
@@ -150,17 +148,6 @@ export const useNewsStore = create<NewsState>((set, get) => ({
     }
   },
 
-  /**
-   * Fetch all regions that have news
-   */
-  fetchAllRegions: async () => {
-    try {
-      const data = await fetchRegions();
-      set({ regions: data });
-    } catch (err: any) {
-      set({ error: err.message || "Failed to fetch regions" });
-    }
-  },
 
   /**
    * Fetch all countries that have news

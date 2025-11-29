@@ -5,7 +5,8 @@ import NewsContent from "./NewsContent";
 import { useNewsStore } from "@/store/newsStore";
 import { CategorySelect } from "./CategorySelect";
 import { TimeFrameSelect } from "./TimeFrameSelect";
-import { fetchRegions, fetchCountries } from "@/service/newsService";
+import { fetchCountries } from "@/service/newsService";
+import CountrySearchSelect from "./CountrySearchSelect";
 
 export default function Main() {
   const {
@@ -25,26 +26,19 @@ export default function Main() {
   const lastElementRef = useRef<HTMLDivElement | null>(null);
 
   // Local state for regions/countries
-  const [regions, setRegions] = useState<{ id: string; name: string }[]>([]);
   const [countries, setCountries] = useState<{ id: string; name: string; region_id: string }[]>([]);
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   // Load initial news + regions/countries
   useEffect(() => {
     fetchAllNews();
 
-    const loadRegions = async () => {
-      const data = await fetchRegions();
-      setRegions(data.map(r => ({ id: String(r.id), name: r.name })));
-    };
 
     const loadCountries = async () => {
       const data = await fetchCountries();
       setCountries(data.map(c => ({ id: String(c.id), name: c.name, region_id: String(c.region_id) })));
     };
 
-    loadRegions();
     loadCountries();
   }, []);
 
@@ -77,10 +71,6 @@ export default function Main() {
     };
   }, [handleObserver, news.length]);
 
-  // Filter countries based on selected region
-  const filteredCountries = selectedRegion
-    ? countries.filter((c) => c.region_id === selectedRegion)
-    : countries;
 
   // Unified function to fetch news with current filters
   const fetchNewsWithFilters = (overrides: {
@@ -118,31 +108,9 @@ export default function Main() {
             }}
           />
 
-          {/* Region Select */}
-          <MainSelect
-            addClass=""
-            label="Region"
-            options={[
-              { value: "all", label: "All Regions", className: "font-normal" },
-              ...regions.map((r) => ({ value: r.id, label: r.name })),
-            ]}
-            value={selectedRegion ?? "all"}
-            onChange={(val) => {
-              const regionId = val === "all" ? undefined : val;
-              setSelectedRegion(val === "all" ? null : val);
-              setSelectedCountry(null);
-              fetchNewsWithFilters({ region: regionId, country: undefined });
-            }}
-          />
-
           {/* Country Select */}
-          <MainSelect
-            addClass=""
+          <CountrySearchSelect
             label="Country"
-            options={[
-              { value: "all", label: "All Countries", className: "font-normal" },
-              ...filteredCountries.map((c) => ({ value: c.id, label: c.name })),
-            ]}
             value={selectedCountry ?? "all"}
             onChange={(val) => {
               const countryId = val === "all" ? undefined : val;
@@ -150,6 +118,7 @@ export default function Main() {
               fetchNewsWithFilters({ country: countryId });
             }}
           />
+
         </div>
       </header>
 

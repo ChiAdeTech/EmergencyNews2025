@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup  # ✅ for cleaning HTML
 
 class NewsArticleSerializer(serializers.ModelSerializer):
     summary = serializers.SerializerMethodField()  # <-- clean summary text
-    region = serializers.CharField(source="region.name", read_only=True)
     country = serializers.CharField(source="country.name", read_only=True)
 
     class Meta:
@@ -16,7 +15,6 @@ class NewsArticleSerializer(serializers.ModelSerializer):
             'title',
             'link',
             'category',
-            'region',
             'country',
             'published',
             'summary',
@@ -31,5 +29,3 @@ class NewsArticleSerializer(serializers.ModelSerializer):
         soup = BeautifulSoup(obj.summary, "html.parser")
         text = soup.get_text(separator=" ", strip=True)
         return text
-
-

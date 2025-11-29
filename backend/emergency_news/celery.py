@@ -49,5 +49,17 @@ app.conf.beat_schedule = {
         'task': 'newsfeeds.tasks.fetch_allafrica_news',
         'schedule': crontab(minute=0, hour='*'),
     },
+    'fetch-modernghana-news-every-hour': {
+        'task': 'newsfeeds.tasks.fetch_modernghana_news',
+        'schedule': crontab(minute=0, hour='*'),
+    },
+    'fetch-myjoyonline-news-every-hour': {
+        'task': 'newsfeeds.tasks.fetch_myjoyonline_news',
+        'schedule': crontab(minute=0, hour='*'),
+    },
+    'fetch-ghheadlines-news-every-hour': {
+        'task': 'newsfeeds.tasks.fetch_ghheadlines_news',
+        'schedule': crontab(minute=0, hour='*'),
+    },
 
 }

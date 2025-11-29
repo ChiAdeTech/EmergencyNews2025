@@ -1,16 +1,24 @@
-# newsfeeds/views.py
-
 from rest_framework import viewsets, filters
-from .models import NewsArticle
+from .models import NewsArticle, Country
 from .serializers import NewsArticleSerializer
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet, CharFilter
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .pagination import HttpsPagination
 import datetime
 from datetime import timedelta
-from .pagination import HttpsPagination
-from .models import Region, Country
+
+# Custom FilterSet for NewsArticle
+class NewsArticleFilter(FilterSet):
+    country = CharFilter(field_name='country__name', lookup_expr='icontains')
+    source = CharFilter(field_name='source', lookup_expr='icontains')
+    category = CharFilter(field_name='category', lookup_expr='icontains')
+
+    class Meta:
+        model = NewsArticle
+        fields = ['country', 'source', 'category']
+
 
 class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -27,10 +35,9 @@ class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = NewsArticle.objects.all().order_by('-published')
     serializer_class = NewsArticleSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ['title', 'category', 'summary', 'source', 'region__name', 'country__name']
-    filterset_fields = ['category', 'source', 'region', 'country']
-
-    pagination_class = HttpsPagination 
+    filterset_class = NewsArticleFilter
+    search_fields = ['title', 'category', 'summary', 'source', 'country__name']
+    pagination_class = HttpsPagination
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -117,22 +124,17 @@ class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
                     queryset = queryset.filter(published__gte=start, published__lt=end)
 
                 else:
-                    # Unknown or invalid format => return empty queryset
                     queryset = queryset.none()
 
         except Exception:
-            # Any parsing errors => return empty queryset
             queryset = queryset.none()
-
 
         return queryset
 
 
 @api_view(['GET'])
 def categories_list(request):
-    """
-    Returns a sorted list of unique categories
-    """
+    """Returns a sorted list of unique categories"""
     categories = (
         NewsArticle.objects.values_list('category', flat=True)
         .distinct()
@@ -140,23 +142,13 @@ def categories_list(request):
     )
     return Response(list(categories))
 
-@api_view(['GET'])
-def regions_list(request):
-    regions = (
-        Region.objects.filter(newsarticle__isnull=False)
-        .distinct()
-        .values('id', 'name')
-        .order_by('name')
-    )
-    return Response(list(regions))
 
 @api_view(['GET'])
 def countries_list(request):
     countries = (
         Country.objects.filter(newsarticle__isnull=False)
         .distinct()
-        .values('id', 'name', 'region_id')
+        .values('id', 'name')
         .order_by('name')
     )
     return Response(list(countries))
-
