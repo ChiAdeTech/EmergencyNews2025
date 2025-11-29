@@ -8,7 +8,6 @@ import { useNewsStore } from "@/store/newsStore";
 function formatCategoryName(category: string): string {
   if (category.toLowerCase() === "more-news") return "Others";
 
-  // Replace underscores/hyphens and capitalize each word
   return category
     .replace(/[-_]+/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -23,40 +22,45 @@ export function CategorySelect() {
     fetchAllNews,
   } = useNewsStore();
 
-  // ✅ Load categories when component mounts
   useEffect(() => {
     fetchAllCategories();
   }, [fetchAllCategories]);
 
-  // ✅ Sort alphabetically but move "more-news" (Others) to the end
+  // ✅ Filter out null/undefined categories before sorting
   const sortedCategories = useMemo(() => {
-    const withoutMoreNews = categories
+    const validCategories = categories.filter((c): c is string => !!c);
+
+    const withoutMoreNews = validCategories
       .filter((c) => c.toLowerCase() !== "more-news")
       .sort((a, b) => a.localeCompare(b));
 
-    const hasMoreNews = categories.some((c) => c.toLowerCase() === "more-news");
+    const hasMoreNews = validCategories.some((c) => c.toLowerCase() === "more-news");
     return hasMoreNews ? [...withoutMoreNews, "more-news"] : withoutMoreNews;
   }, [categories]);
 
   const handleCategoryChange = (value: string) => {
     if (value === "All") {
-      fetchAllNews(); // Reset to all news
+      fetchAllNews();
     } else {
       fetchNewsByCategory(value);
     }
   };
 
+  // ✅ Ensure Select has a valid value
+  const currentValue = selectedCategory && categories.includes(selectedCategory)
+    ? selectedCategory
+    : "All";
+
   return (
-    <Select value={selectedCategory || ""} onValueChange={handleCategoryChange}>
+    <Select value={currentValue} onValueChange={handleCategoryChange}>
       <SelectTrigger
-        className="focus:outline-none !ring-0 !border-transparent w-full md:w-[150px]
-                        focus:ring-0 focus:border-transparent bg-[#F2E8E8] rounded-[8px] md:text-[14px]"
+        className="focus:outline-none !ring-0 !border-transparent w-fit
+                   focus:ring-0 focus:border-transparent bg-[#F2E8E8] rounded-[8px] md:text-[14px]"
       >
         <SelectValue placeholder="Select category" />
       </SelectTrigger>
 
       <SelectContent>
-        {/* Always keep All at the top */}
         <SelectItem value="All">All</SelectItem>
 
         {sortedCategories.map((category) => (

@@ -61,13 +61,11 @@ export default function NewsContent({ article }: NewsContentProps) {
   // Format category nicely: replace _ or - with spaces and capitalize each word
   const formattedCategory = article.category
     ? article.category
-        .replace(/[-_]+/g, " ") // replace hyphens/underscores with spaces
-        .replace(/\b\w/g, (char) => char.toUpperCase()) // capitalize first letter of each word
+        .replace(/[-_]+/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase())
     : "Uncategorized";
 
-
   const handleReadMore = () => {
-    // Always open the full article link
     window.open(article.link, "_blank", "noopener,noreferrer");
   };
 
@@ -81,22 +79,18 @@ export default function NewsContent({ article }: NewsContentProps) {
           {article.title}
         </h2>
 
-        {/* Summary (if exists) */}
         {article.summary && (
           <p className="text-gray-700 text-[14px] leading-relaxed mb-2">
             {displayedSummary}
           </p>
         )}
 
-        {/* Read button logic */}
         {showExpand ? (
           <button
             onClick={() => {
               if (!isExpanded) {
-                // Expand text first
                 setIsExpanded(true);
               } else {
-                // Then open the article
                 handleReadMore();
               }
             }}
@@ -113,12 +107,17 @@ export default function NewsContent({ article }: NewsContentProps) {
           </button>
         )}
 
-
         {/* Source & Category */}
         <div className="mt-3 text-[13px] text-gray-500 flex flex-wrap gap-2">
           <span>Source: {article.source}</span>
           <span>•</span>
           <span>Category: {formattedCategory}</span>
+        </div>
+
+        {/* Region & Country */}
+        <div className="mt-1 text-[13px] text-gray-500 flex flex-wrap gap-2">
+          {article.region && <span>Region: {article.region}</span>}
+          {article.country && <span>Country: {article.country}</span>}
         </div>
       </div>
 
@@ -133,13 +132,11 @@ export default function NewsContent({ article }: NewsContentProps) {
             className="rounded-md object-cover w-full h-auto"
             onError={(e) => {
               const target = e.currentTarget;
-              // Prevent infinite loop in case fallback also fails
               if (target.src !== FALLBACK_NEWS_IMAGE) {
                 target.src = FALLBACK_NEWS_IMAGE;
               }
             }}
           />
-
         ) : (
           <div className="w-full h-[200px] bg-gray-200 rounded-md flex items-center justify-center text-gray-500 text-sm">
             No image available

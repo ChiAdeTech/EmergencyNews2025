@@ -25,10 +25,10 @@ export default function Main() {
   const lastElementRef = useRef<HTMLDivElement | null>(null);
 
   // Local state for regions/countries
-  const [regions, setRegions] = useState<{ id: string; name: string }[]>([]);
-  const [countries, setCountries] = useState<{ id: string; name: string; region_id: string }[]>([]);
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [regions, setRegions] = useState<{ id: number; name: string }[]>([]);
+  const [countries, setCountries] = useState<{ id: number; name: string; region_id: number }[]>([]);
+  const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<number | null>(null);
 
   // Load initial news + regions/countries
   useEffect(() => {
@@ -36,19 +36,18 @@ export default function Main() {
 
     const loadRegions = async () => {
       const data = await fetchRegions();
-      setRegions(data.map(r => ({ id: String(r.id), name: r.name })));
+      setRegions(data);
     };
-
     const loadCountries = async () => {
       const data = await fetchCountries();
-      setCountries(data.map(c => ({ id: String(c.id), name: c.name, region_id: String(c.region_id) })));
+      setCountries(data);
     };
 
     loadRegions();
     loadCountries();
   }, []);
 
-  // Infinite scroll
+  // Infinite scroll handler
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0];
@@ -82,21 +81,6 @@ export default function Main() {
     ? countries.filter((c) => c.region_id === selectedRegion)
     : countries;
 
-  // Unified function to fetch news with current filters
-  const fetchNewsWithFilters = (overrides: {
-    category?: string | null;
-    timeFrame?: string | null;
-    region?: string | null;
-    country?: string | null;
-  } = {}) => {
-    fetchAllNews({
-      category: overrides.category ?? selectedCategory ?? undefined,
-      timeFrame: overrides.timeFrame ?? selectedTimeFrame ?? undefined,
-      region: overrides.region ?? undefined, // treat null/undefined as "All"
-      country: overrides.country ?? undefined,
-    });
-  };
-
   return (
     <main className="flex-1 h-full md:px-[50px] px-[20px] py-[53px]">
       {/* Header */}
@@ -104,50 +88,45 @@ export default function Main() {
         <p className="text-[20px] md:text-[28px] font-bold">Live News Feed</p>
 
         <div className="flex gap-[12.18px] self-end flex-wrap">
-          {/* Category Select */}
-          <CategorySelect
-            onChange={(val) => {
-              fetchNewsWithFilters({ category: val ?? undefined });
-            }}
-          />
+          <CategorySelect />
+          <TimeFrameSelect />
 
-          {/* Time Frame Select */}
-          <TimeFrameSelect
-            onChange={(val) => {
-              fetchNewsWithFilters({ timeFrame: val ?? undefined });
-            }}
-          />
-
-          {/* Region Select */}
+          {/* Region select */}
           <MainSelect
             addClass=""
             label="Region"
-            options={[
-              { value: "all", label: "All Regions", className: "font-normal" },
-              ...regions.map((r) => ({ value: r.id, label: r.name })),
-            ]}
-            value={selectedRegion ?? "all"}
+            options={regions.map((r) => ({ value: r.id, label: r.name }))}
+            value={selectedRegion ?? ""}
             onChange={(val) => {
-              const regionId = val === "all" ? undefined : val;
-              setSelectedRegion(val === "all" ? null : val);
+              const regionId = Number(val) || null;
+              setSelectedRegion(regionId);
               setSelectedCountry(null);
-              fetchNewsWithFilters({ region: regionId, country: undefined });
+
+              fetchAllNews({
+                timeFrame: selectedTimeFrame || undefined,
+                category: selectedCategory || undefined,
+                region: regionId ?? undefined, // send ID
+                country: undefined,
+              });
             }}
           />
 
-          {/* Country Select */}
+          {/* Country select */}
           <MainSelect
             addClass=""
             label="Country"
-            options={[
-              { value: "all", label: "All Countries", className: "font-normal" },
-              ...filteredCountries.map((c) => ({ value: c.id, label: c.name })),
-            ]}
-            value={selectedCountry ?? "all"}
+            options={filteredCountries.map((c) => ({ value: c.id, label: c.name }))}
+            value={selectedCountry ?? ""}
             onChange={(val) => {
-              const countryId = val === "all" ? undefined : val;
-              setSelectedCountry(val === "all" ? null : val);
-              fetchNewsWithFilters({ country: countryId });
+              const countryId = Number(val) || null;
+              setSelectedCountry(countryId);
+
+              fetchAllNews({
+                timeFrame: selectedTimeFrame || undefined,
+                category: selectedCategory || undefined,
+                region: selectedRegion ?? undefined,
+                country: countryId ?? undefined, // send ID
+              });
             }}
           />
         </div>

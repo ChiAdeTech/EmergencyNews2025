@@ -1,3 +1,5 @@
+# emergency_news/celery.py
+
 import os
 from celery import Celery
 from celery.schedules import crontab
@@ -43,4 +45,9 @@ app.conf.beat_schedule = {
         'task': 'newsfeeds.tasks.fetch_premiumtimes_news',
         'schedule': crontab(minute=0, hour='*'),
     },
+    'fetch-allafrica-every-hour': {
+        'task': 'newsfeeds.tasks.fetch_allafrica_news',
+        'schedule': crontab(minute=0, hour='*'),
+    },
+
 }

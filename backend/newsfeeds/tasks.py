@@ -35,3 +35,8 @@ def fetch_channelstv_news():
 @shared_task
 def fetch_premiumtimes_news():
     call_command('fetch_premiumtimes_news')
+
+
+@shared_task
+def fetch_allafrica_news():
+    call_command('fetch_allafrica_news')

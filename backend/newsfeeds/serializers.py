@@ -1,9 +1,13 @@
+# newsfeeds/serializers.py
+
 from rest_framework import serializers
 from .models import NewsArticle
 from bs4 import BeautifulSoup  # ✅ for cleaning HTML
 
 class NewsArticleSerializer(serializers.ModelSerializer):
     summary = serializers.SerializerMethodField()  # <-- clean summary text
+    region = serializers.CharField(source="region.name", read_only=True)
+    country = serializers.CharField(source="country.name", read_only=True)
 
     class Meta:
         model = NewsArticle
@@ -12,6 +16,8 @@ class NewsArticleSerializer(serializers.ModelSerializer):
             'title',
             'link',
             'category',
+            'region',
+            'country',
             'published',
             'summary',
             'source',

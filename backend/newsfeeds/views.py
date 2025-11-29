@@ -1,3 +1,5 @@
+# newsfeeds/views.py
+
 from rest_framework import viewsets, filters
 from .models import NewsArticle
 from .serializers import NewsArticleSerializer
@@ -8,6 +10,7 @@ from rest_framework.response import Response
 import datetime
 from datetime import timedelta
 from .pagination import HttpsPagination
+from .models import Region, Country
 
 class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -24,8 +27,8 @@ class NewsArticleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = NewsArticle.objects.all().order_by('-published')
     serializer_class = NewsArticleSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ['title', 'category', 'summary', 'source']
-    filterset_fields = ['category', 'source']
+    search_fields = ['title', 'category', 'summary', 'source', 'region__name', 'country__name']
+    filterset_fields = ['category', 'source', 'region', 'country']
 
     pagination_class = HttpsPagination 
 
@@ -136,3 +139,24 @@ def categories_list(request):
         .order_by('category')
     )
     return Response(list(categories))
+
+@api_view(['GET'])
+def regions_list(request):
+    regions = (
+        Region.objects.filter(newsarticle__isnull=False)
+        .distinct()
+        .values('id', 'name')
+        .order_by('name')
+    )
+    return Response(list(regions))
+
+@api_view(['GET'])
+def countries_list(request):
+    countries = (
+        Country.objects.filter(newsarticle__isnull=False)
+        .distinct()
+        .values('id', 'name', 'region_id')
+        .order_by('name')
+    )
+    return Response(list(countries))
+
