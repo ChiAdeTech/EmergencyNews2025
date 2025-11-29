@@ -11,7 +11,7 @@ from datetime import timedelta
 
 # Custom FilterSet for NewsArticle
 class NewsArticleFilter(FilterSet):
-    country = CharFilter(field_name='country__name', lookup_expr='icontains')
+    country = CharFilter(field_name='country__name', lookup_expr='iexact')
     source = CharFilter(field_name='source', lookup_expr='icontains')
     category = CharFilter(field_name='category', lookup_expr='icontains')
 

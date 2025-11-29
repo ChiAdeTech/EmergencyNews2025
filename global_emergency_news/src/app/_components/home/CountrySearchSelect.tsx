@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect, useRef } from "react";
-import wc from "world-countries";
+import { DJANGO_API } from "@/utils/MyConstants";
 
 interface Option {
   value: string;
@@ -16,23 +16,30 @@ interface Props {
 export default function CountrySearchSelect({ label, value, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-
+  const [options, setOptions] = useState<Option[]>([{ value: "all", label: "All Countries" }]);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const [options, setOptions] = useState<Option[]>([
-    { value: "all", label: "All Countries" },
-  ]);
-
-  /** Load countries */
+  /** Load countries from API */
   useEffect(() => {
-    const formatted = wc
-      .map((c) => ({
-        value: c.name.common,
-        label: c.name.common,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
+    const fetchCountries = async () => {
+      try {
+        const res = await fetch(`${DJANGO_API}/countries/`);
+        const data: { id: number; name: string }[] = await res.json();
 
-    setOptions([{ value: "all", label: "All Countries" }, ...formatted]);
+        const formatted: Option[] = data
+          .map((c) => ({
+            value: c.name,
+            label: c.name,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label));
+
+        setOptions([{ value: "all", label: "All Countries" }, ...formatted]);
+      } catch (error) {
+        console.error("Failed to fetch countries:", error);
+      }
+    };
+
+    fetchCountries();
   }, []);
 
   /** Click outside to close */
@@ -42,7 +49,6 @@ export default function CountrySearchSelect({ label, value, onChange }: Props) {
         setOpen(false);
       }
     }
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -56,8 +62,6 @@ export default function CountrySearchSelect({ label, value, onChange }: Props) {
 
   return (
     <div ref={wrapperRef} className="relative w-[180px]">
-      {/* {label && <p className="text-xs mb-1 font-semibold">{label}</p>} */}
-
       {/* Trigger */}
       <button
         onClick={() => setOpen((p) => !p)}
@@ -89,7 +93,6 @@ export default function CountrySearchSelect({ label, value, onChange }: Props) {
                   key={opt.value}
                   className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
                   onClick={() => {
-                    // onChange(opt.value.toLowerCase());
                     onChange(opt.value);
                     setOpen(false);
                     setSearch("");
