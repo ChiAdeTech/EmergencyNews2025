@@ -1,17 +1,10 @@
-# run_fetch_tasks.py
+from newsfeeds.tasks import *
 
-import os
-import django
-
-# Set up Django environment
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "emergency_news.settings")
-django.setup()
-
-from newsfeeds.tasks import NEWS_COMMANDS
 def run_all_fetch_tasks():
-    tasks = NEWS_COMMANDS
+    # Dynamically collect all fetch functions from globals()
+    tasks_list = [v for k, v in globals().items() if callable(v) and k.startswith("fetch_")]
 
-    for task in tasks:
+    for task in tasks_list:
         task.delay()
         print(f"Task {task.__name__} triggered successfully.")
 
