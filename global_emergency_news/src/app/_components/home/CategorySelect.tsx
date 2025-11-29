@@ -13,7 +13,12 @@ function formatCategoryName(category: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export function CategorySelect() {
+// ✅ Add props interface
+interface CategorySelectProps {
+  onChange?: (val: string) => void;
+}
+
+export function CategorySelect({ onChange }: CategorySelectProps) {
   const {
     categories,
     selectedCategory,
@@ -26,7 +31,6 @@ export function CategorySelect() {
     fetchAllCategories();
   }, [fetchAllCategories]);
 
-  // ✅ Filter out null/undefined categories before sorting
   const sortedCategories = useMemo(() => {
     const validCategories = categories.filter((c): c is string => !!c);
 
@@ -44,9 +48,11 @@ export function CategorySelect() {
     } else {
       fetchNewsByCategory(value);
     }
+
+    // ✅ Call external onChange if provided
+    if (onChange) onChange(value);
   };
 
-  // ✅ Ensure Select has a valid value
   const currentValue = selectedCategory && categories.includes(selectedCategory)
     ? selectedCategory
     : "All";

@@ -15,6 +15,7 @@ from newsfeeds.tasks import (
     fetch_guardian_news,
     fetch_channelstv_news,
     fetch_premiumtimes_news,
+    fetch_allafrica_news,
 )
 
 def run_all_fetch_tasks():
@@ -26,6 +27,7 @@ def run_all_fetch_tasks():
         fetch_guardian_news,
         fetch_channelstv_news,
         fetch_premiumtimes_news,
+        fetch_allafrica_news,
     ]
 
     for task in tasks:
