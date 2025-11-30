@@ -24,7 +24,13 @@ from newsfeeds.tasks import (
     fetch_fatunetwork_news,
     fetch_nigerexpress_news,
     fetch_lesahel_news,
-    fetch_airinfoagadez_news
+    fetch_airinfoagadez_news,
+    fetch_dakaractu_news,
+    fetch_thiesinfo_news,
+    fetch_terangatimesn_news,
+    fetch_cocorioko_news,
+    fetch_calabash_news,
+    fetch_critiqueecho_news,
 )
 
 
@@ -46,7 +52,13 @@ def run_all_fetch_tasks():
         fetch_fatunetwork_news,
         fetch_nigerexpress_news,
         fetch_lesahel_news,
-        fetch_airinfoagadez_news
+        fetch_airinfoagadez_news,
+        fetch_dakaractu_news,
+        fetch_thiesinfo_news,
+        fetch_terangatimesn_news,
+        fetch_cocorioko_news,
+        fetch_calabash_news,
+        fetch_critiqueecho_news,
     ]
 
     for task in tasks:

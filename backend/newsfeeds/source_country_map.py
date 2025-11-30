@@ -24,9 +24,9 @@ SOURCE_COUNTRY_MAP = {
     "Mali": [],
     "Mauritania": [],
     "Niger": ['NigerExpress', 'Le Sahel', 'AirInfoAgadez'],
-    "Nigeria": ["Vanguard", "Premium Times", "The Guardian"],
-    "Senegal": [],
-    "Sierra Leone": [],
+    "Nigeria": ["Vanguard", "Premium Times", "The Guardian", "Channels TV"],
+    "Senegal": ['Dakaractu', 'Thiesinfo', 'TerangaTimesN'],
+    "Sierra Leone": ['Cocorioko', 'The Calabash Newspaper', 'CritiqueEcho'],
     "Togo": [],
 
     # Central Africa
@@ -64,7 +64,7 @@ SOURCE_COUNTRY_MAP = {
     "Eswatini": [],
     "Lesotho": [],
     "Namibia": [],
-    "South Africa": ["TimesLIVE", "Mail & Guardian"],
+    "South Africa": [],
 }
 
 
