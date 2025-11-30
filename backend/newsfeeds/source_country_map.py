@@ -20,14 +20,14 @@ SOURCE_COUNTRY_MAP = {
     "Ghana": ["Modern Ghana", "MyJoyOnline", "GH Headlines"],
     "Guinea": [],
     "Guinea-Bissau": [],
-    "Liberia": [],
-    "Mali": [],
-    "Mauritania": [],
+    "Liberia": ["AllAfrica Liberia"],
+    "Mali": ['MaliWeb',"L'Express du Mali", "Bamada"],
+    "Mauritania": ['Kassataya', 'Le Calame', 'Tawary'],
     "Niger": ['NigerExpress', 'Le Sahel', 'AirInfoAgadez'],
     "Nigeria": ["Vanguard", "Premium Times", "The Guardian", "Channels TV"],
     "Senegal": ['Dakaractu', 'Thiesinfo', 'TerangaTimesN'],
     "Sierra Leone": ['Cocorioko', 'The Calabash Newspaper', 'CritiqueEcho'],
-    "Togo": [],
+    "Togo": ['iciLome', 'LomeInfos'],
 
     # Central Africa
     "Cameroon": [],
