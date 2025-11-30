@@ -19,8 +19,8 @@ app.autodiscover_tasks()
 
 # Hourly news fetch schedule
 app.conf.beat_schedule = {
-    f'{task.split(".")[-1]}-every-hour': {
-        'task': f"newsfeeds.tasks.{task}",
+    f'{task}-every-hour': {
+        'task': task,
         'schedule': crontab(minute=0, hour='*'),
     } for task in NEWS_COMMANDS
 }
