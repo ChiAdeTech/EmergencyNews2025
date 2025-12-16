@@ -1,11 +1,10 @@
 # Emergency News API
 
 **Project Name:** Emergency News
-**Company:** ChiAde Tech
-**Authors:**
 
-* Adesina Olagunju ([adesinaolagunju1@gmail.com](mailto:adesinaolagunju1@gmail.com))
-* Chiamaka Nwankwo ([chiamakanwankwo557@gmail.com](mailto:chiamakanwankwo557@gmail.com))
+**Company:** ChiAde Tech
+
+**Author:** Adesina Olagunju ([daadesina1@gmail.com](mailto:daadesina1@gmail.com))
 
 **Date:** 23 October 2025
 
